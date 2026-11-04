@@ -20,15 +20,17 @@ echo "OS detected: $OSTYPE"
 
 case "$OSTYPE" in
     darwin*)
-        cd "`dirname $0`" || exit 1
+        cd "$(dirname "$0")" || exit 1
         ;;
 
-    linux*)
-        cd "$(dirname "$(readlink -f "$0")")" || exit 1
+    linux* | msys* | cygwin*)
+        # msys/cygwin can use standard dirname or readlink depending on the environment
+        cd "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")" || exit 1
         ;;
 
     *)
         echo "OS unsupported (submit an issue on GitHub!)"
+        exit 1
         ;;
 esac
 
